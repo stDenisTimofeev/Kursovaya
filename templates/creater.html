@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Создайте свой торт
+{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1>Конструктор тортов</h1>
+
+    <script>
+        var creams = {};
+        {% for cream in json_layers_params.creams %}
+        creams[{{cream.id}}] = "{{cream.name}}";
+        {% endfor %}
+
+        var fillings = {};
+        {% for filling in json_layers_params.fillings %}
+        fillings[{{filling.id}}] = "{{filling.name}}";
+        {% endfor %}
+
+        var shapes = {};
+        {% for shape in json_layers_params.shapes %}
+        shapes[{{shape.id}}] = "{{shape.name}}";
+        {% endfor %}
+    </script>
+
+    <table>
+        <tr>
+            <td>
+                <select name="Крема" id="SelectCreams"></select> <!--шаблон для кремов-->
+                <select name="Начинки" id="SelectFillings"></select> <!--шаблон для начинок-->
+                <select name="Формы" id="SelectShapes"></select> <!--шаблон для форм-->
+            </td>
+        </tr>
+    </table>
+
+
+    <script>
+        CreamsSelect = document.getElementById('SelectCreams');
+        for (const [key, value] of Object.entries(creams))
+        {
+            CreamsSelect.options[CreamsSelect.options.length] = new Option(value, key);
+        }
+
+        FillingsSelect = document.getElementById('SelectFillings');
+        for (const [key, value] of Object.entries(fillings))
+        {
+            FillingsSelect.options[FillingsSelect.options.length] = new Option(value, key);
+        }
+
+        ShapesSelect = document.getElementById('SelectShapes');
+        for (const [key, value] of Object.entries(shapes))
+        {
+            ShapesSelect.options[ShapesSelect.options.length] = new Option(value, key);
+        }
+
+    </script>
+
+    <script>
+        function prepareData()
+        {
+            CreamsSelect = document.getElementById('SelectCreams');
+            FillingsSelect = document.getElementById('SelectFillings');
+            ShapesSelect = document.getElementById('SelectShapes');
+            inpVal = document.getElementById('title');
+
+            hiddenJSON = document.getElementById('hiddenJSON');
+            hiddenJSON.value = "{ \"cakeTitle\":\"" + inpVal.value + "\",\"cakeLayers\":[{\"creamsId\":" + CreamsSelect.value +",\"shapeId\":" + ShapesSelect.value + ",\"fillingId\":" + FillingsSelect.value + ",\"rank\":1}]}";
+
+            //hiddenJSON.value = "{ \"cakeTitle\": \"Название торта\",\"cakeLayers\":[{\"creamsId\":1,\"fillingId\":1,\"shapeId\":1,\"rank\":1},{\"creamsId\":2,\"fillingId\":2,\"shapeId\":2,\"rank\":2}]}";
+
+        }
+    </script>
+    <form action="" method="POST" class="form-contact">
+        <input type="text" name="title" id="title" placeholder="Придумайте название">
+        <input type="button" name="prepare" class="btn btn-success" value="Подготовить" onclick="prepareData()">
+        <input type="hidden" name="hiddenJSON" id="hiddenJSON" > <!-- value="{ &quot;cakeTitle&quot;: &quot;Название торта&quot;,&quot;cakeLayers&quot;:[{&quot;creamsId&quot;:1,&quot;fillingId&quot;:1,&quot;shapeId&quot;:1,&quot;rank&quot;:1},{&quot;creamsId&quot;:2,&quot;fillingId&quot;:2,&quot;shapeId&quot;:2,&quot;rank&quot;:2}]}"-->
+        <input type="submit" name="saveCake" class="btn btn-success" value="Сохранить торт">
+    </form>
+</div>
+    {% endblock %}
